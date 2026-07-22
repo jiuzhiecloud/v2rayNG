@@ -151,7 +151,7 @@ class MainActivity : HelperBaseComponentActivity() {
                 // 已修改：直接跳转到你的 GitHub Raw 链接
                 Utils.openUri(
                     this,
-                    "https://raw.githubusercontent.com/jiuzhiecloud/free-sub/refs/heads/main/README.md"
+                    "https://jiuzhiecloud.github.io/free-sub/"
                 )
                 return
             }
