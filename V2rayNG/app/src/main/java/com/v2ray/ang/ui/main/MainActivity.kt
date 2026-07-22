@@ -148,9 +148,10 @@ class MainActivity : HelperBaseComponentActivity() {
             "backup_restore" -> Intent(this, BackupActivity::class.java)
             "about" -> Intent(this, AboutActivity::class.java)
             "promotion" -> {
+                // 已修改：直接跳转到你的 GitHub Raw 链接
                 Utils.openUri(
                     this,
-                    "${Utils.decode(AppConfig.APP_PROMOTION_URL)}?t=${System.currentTimeMillis()}"
+                    "https://raw.githubusercontent.com/jiuzhiecloud/free-sub/refs/heads/main/README.md"
                 )
                 return
             }
