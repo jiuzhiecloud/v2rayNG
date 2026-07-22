@@ -13,7 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
@@ -122,4 +124,8 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       if: github.event.inputs.release_tag != ''
       with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }} # 显式调用 Token 以应用上述权限
         file: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/*/release/*.apk
+        file_glob: true # 2. 必须开启此项，才能正确解析上一行中的星号 (*) 通配符
+        tag: ${{ github.event.inputs.release_tag }}
+        overwrite: true # 允许覆盖同名 Release，避免重复打包时报错
