@@ -91,6 +91,33 @@ class MainActivity : HelperBaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // --- 自定义：首次安装自动添加默认订阅 ---
+        try {
+            val mmkv = com.tencent.mmkv.MMKV.defaultMMKV()
+            // 检查是否已经添加过，避免每次打开应用都重复添加覆盖用户的修改
+            if (mmkv != null && !mmkv.decodeBool("is_default_subs_added_v1", false)) {
+                
+                // 添加第一个订阅：免费
+                val sub1 = com.v2ray.ang.dto.SubscriptionItem()
+                sub1.remarks = "免费"
+                sub1.url = "https://raw.githubusercontent.com/jiuzhiecloud/nodesub/refs/heads/main/sub.txt"
+                MmkvManager.encodeSubscription(java.util.UUID.randomUUID().toString(), sub1)
+
+                // 添加第二个订阅：自建
+                val sub2 = com.v2ray.ang.dto.SubscriptionItem()
+                sub2.remarks = "自建"
+                sub2.url = "https://raw.githubusercontent.com/jiuzhiecloud/nodesub/refs/heads/main/%E8%87%AA%E5%BB%BA%E8%8A%82%E7%82%B9"
+                MmkvManager.encodeSubscription(java.util.UUID.randomUUID().toString(), sub2)
+
+                // 标记为已添加，下次启动不再执行
+                mmkv.encode("is_default_subs_added_v1", true)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        // ----------------------------------------
+
         mainViewModel.onAction(MainAction.Initialize)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
