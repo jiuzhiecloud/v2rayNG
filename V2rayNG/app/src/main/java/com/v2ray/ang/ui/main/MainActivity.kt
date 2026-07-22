@@ -91,36 +91,6 @@ class MainActivity : HelperBaseComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // --- 自定义：首次安装自动添加默认订阅（底层JSON直接写入，兼容最新版） ---
-        try {
-            val mmkv = com.tencent.mmkv.MMKV.defaultMMKV()
-            if (mmkv != null && !mmkv.decodeBool("is_default_subs_added_v4", false)) {
-                
-                // 1. 添加免费订阅
-                val guid1 = java.util.UUID.randomUUID().toString()
-                val json1 = "{\"remarks\":\"免费\",\"url\":\"https://raw.githubusercontent.com/jiuzhiecloud/nodesub/refs/heads/main/sub.txt\",\"enabled\":true}"
-                mmkv.encode(guid1, json1)
-
-                // 2. 添加自建订阅
-                val guid2 = java.util.UUID.randomUUID().toString()
-                val json2 = "{\"remarks\":\"自建\",\"url\":\"https://raw.githubusercontent.com/jiuzhiecloud/nodesub/refs/heads/main/%E8%87%AA%E5%BB%BA%E8%8A%82%E7%82%B9.txt",\"enabled\":true}"
-                mmkv.encode(guid2, json2)
-
-                // 将这两个新订阅的 GUID 加入到订阅分组列表的缓存中
-                val subscriptions = MmkvManager.decodeSubscriptions() ?: arrayListOf()
-                subscriptions.add(guid1)
-                subscriptions.add(guid2)
-                MmkvManager.encodeSubscriptions(subscriptions)
-
-                // 标记为已添加，下次启动不再执行
-                mmkv.encode("is_default_subs_added_v4", true)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        // ----------------------------------------
-
         mainViewModel.onAction(MainAction.Initialize)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
